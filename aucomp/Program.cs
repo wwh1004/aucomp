@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace aucomp {
@@ -44,6 +45,7 @@ namespace aucomp {
 	internal static class Program {
 		private static readonly string[] _audioExtensions = new[] { ".aac", ".ape", ".flac", ".m4a", ".mp3", ".ogg", ".wav", ".wma" };
 		private static readonly string[] _lyricExtensions = new[] { ".lrc" };
+		private static readonly Encoding _gbEncondig = CodePagesEncodingProvider.Instance.GetEncoding("GB18030");
 
 		private static void Main(string[] args) {
 			Settings settings;
@@ -82,25 +84,24 @@ namespace aucomp {
 			if (IsAudioFile(filePath))
 				CallFFmpeg(filePath, Path.ChangeExtension(newFilePath, ".mp3"), settings.Arguments);
 			else if (IsLyricFile(filePath))
-				File.Copy(filePath, newFilePath, true);
+				File.WriteAllText(newFilePath, File.ReadAllText(newFilePath), _gbEncondig);
 		}
 
 		private static void CallFFmpeg(string input, string output, string arguments) {
-			Process process;
-
 			arguments = $"-i \"{input}\" {arguments} \"{output}\"";
 			Console.WriteLine($"ffmpeg.exe {arguments}");
-			process = new Process() {
+			using (Process process = new Process() {
 				StartInfo = new ProcessStartInfo("ffmpeg.exe", arguments) {
 					CreateNoWindow = false,
 					UseShellExecute = true
 				}
-			};
-			process.Start();
-			process.WaitForExit();
-			if (process.ExitCode != 0) {
-				Console.WriteLine($"ExitCode: {process.ExitCode}");
-				Console.ReadKey(true);
+			}) {
+				process.Start();
+				process.WaitForExit();
+				if (process.ExitCode != 0) {
+					Console.WriteLine($"ExitCode: {process.ExitCode}");
+					Console.ReadKey(true);
+				}
 			}
 		}
 
