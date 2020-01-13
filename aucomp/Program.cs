@@ -84,7 +84,7 @@ namespace aucomp {
 			if (IsAudioFile(filePath))
 				CallFFmpeg(filePath, Path.ChangeExtension(newFilePath, ".mp3"), settings.Arguments);
 			else if (IsLyricFile(filePath))
-				File.WriteAllText(newFilePath, File.ReadAllText(newFilePath), _gbEncondig);
+				File.WriteAllText(newFilePath, File.ReadAllText(filePath), _gbEncondig);
 		}
 
 		private static void CallFFmpeg(string input, string output, string arguments) {
