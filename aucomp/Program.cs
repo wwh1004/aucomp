@@ -71,6 +71,8 @@ namespace aucomp {
 					}
 				});
 			Task.WaitAll(tasks);
+			Console.WriteLine("完成");
+			Console.ReadKey(true);
 		}
 
 		private static void Copy(Settings settings, string filePath) {
