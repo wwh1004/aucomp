@@ -90,6 +90,8 @@ namespace aucomp {
 			syncInfos = Enumerable.Range(0, syncInfos.Length).Where(i => exists[i]).Select(i => syncInfos[i]).Concat(newSyncInfos).ToArray();
 			Array.Sort(syncInfos);
 			SaveSyncInfos(settings.OutputDirectory, syncInfos);
+			Console.WriteLine("完成");
+			Console.ReadKey(true);
 		}
 
 		private static void Operate(Settings settings, string filePath, bool copyOrDelete) {
